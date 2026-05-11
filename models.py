@@ -47,8 +47,8 @@ class User(Base):
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
 
     role = relationship("Role", back_populates="users")
-    request = relationship("Request", back_populates="user")
     employee = relationship("Employee", back_populates="user", uselist=False)
+    requests = relationship("Request", back_populates="user")
 
 
 class Employee(Base):
@@ -105,8 +105,10 @@ class Request(Base):
 
     user = relationship("User", back_populates="requests")
     status = relationship("RequestStatus", back_populates="requests")
-    services = relationship("Service", back_populates="requests")
-    assignments = relationship("RequestsAssignment", back_populates="requests")
+    services = relationship(
+        "Service", secondary=request_services, back_populates="requests"
+    )
+    assignments = relationship("RequestAssignment", back_populates="request")
 
 
 class RequestAssignment(Base):
